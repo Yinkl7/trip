@@ -1,0 +1,20 @@
+:root {
+  --primary-color: #ff9854;
+  --line-color: #faf8f9;
+}
+
+body {
+  font-size: 14px;
+}
+
+.top-page {
+  position: relative;
+  z-index: 99;
+  height: 100vh;
+  background-color: #fff;
+  overflow-y: auto;
+}
+
+.bottom-gray-line {
+  border-bottom: 1px solid var(--line-color);
+}
