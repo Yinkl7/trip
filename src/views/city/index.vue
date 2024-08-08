@@ -17,9 +17,9 @@ const cancelClick = () => {
 const tabActive = ref<string>('')
 
 // 获取数据
-const store = useCityStore()
-const { allCities } = storeToRefs(store)
-store.fetchAllCitiesData()
+const cityStore = useCityStore()
+const { allCities } = storeToRefs(cityStore)
+cityStore.fetchAllCitiesData()
 </script>
 
 <template>

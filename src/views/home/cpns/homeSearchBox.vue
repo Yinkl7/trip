@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import useCityStore from '@/stores/modules/city'
 import useHomeStore from '@/stores/modules/home'
+import useMainStore from '@/stores/modules/main'
 import { formatMonthDay, getDiffDays } from '@/utils/formatDate'
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -28,21 +29,27 @@ const positionClick = () => {
   )
 }
 
-const store = useCityStore()
-const { currentCity } = storeToRefs(store)
+const cityStore = useCityStore()
+const { currentCity } = storeToRefs(cityStore)
+
+const mainStore = useMainStore()
+const { startDate, endDate } = storeToRefs(mainStore)
 
 const nowDate = new Date()
-const startDate = ref(formatMonthDay(nowDate))
-const newDate = new Date().setDate(new Date().getDate() + 1)
-const endDate = ref(formatMonthDay(newDate))
+startDate.value = nowDate
+const newDate = new Date(new Date().setDate(new Date().getDate() + 1))
+endDate.value = newDate
 const stayCount = ref(getDiffDays(nowDate, newDate))
+
+const startDateStr = computed(() => formatMonthDay(startDate.value))
+const endDateStr = computed(() => formatMonthDay(endDate.value))
 
 const showCalender = ref(false)
 
 function onConfirm(values: Date | Date[]) {
   if (Array.isArray(values)) {
-    startDate.value = formatMonthDay(values[0])
-    endDate.value = formatMonthDay(values[1])
+    startDate.value = values[0]
+    endDate.value = values[1]
     stayCount.value = getDiffDays(values[0], values[1])
   }
   showCalender.value = false
@@ -50,6 +57,17 @@ function onConfirm(values: Date | Date[]) {
 
 const homeStore = useHomeStore()
 const { hotSuggests } = storeToRefs(homeStore)
+
+const searchBtnClick = () => {
+  router.push({
+    path: '/search',
+    query: {
+      startDate: startDate.value!.toString(),
+      endDate: endDate.value!.toString(),
+      currentCity: currentCity.value.cityName
+    }
+  })
+}
 </script>
 
 <template>
@@ -68,14 +86,14 @@ const { hotSuggests } = storeToRefs(homeStore)
       <div class="start">
         <div class="date">
           <span>入住</span>
-          <span>{{ startDate }}</span>
+          <span>{{ startDateStr }}</span>
         </div>
       </div>
       <div class="stay">共{{ stayCount }}晚</div>
       <div class="end">
         <div class="date">
           <span>离店</span>
-          <span>{{ endDate }}</span>
+          <span>{{ endDateStr }}</span>
         </div>
       </div>
     </section>
@@ -105,6 +123,11 @@ const { hotSuggests } = storeToRefs(homeStore)
           {{ item.tagText.text }}
         </div>
       </template>
+    </div>
+
+    <!-- 搜索按钮 -->
+    <div class="section search-btn">
+      <div class="btn" @click="searchBtnClick">开始搜索</div>
     </div>
   </div>
 </template>
@@ -196,6 +219,21 @@ const { hotSuggests } = storeToRefs(homeStore)
     border-radius: 14px;
     font-size: 12px;
     line-height: 1;
+  }
+}
+
+.search-btn {
+  .btn {
+    width: 342px;
+    height: 38px;
+    max-height: 50px;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 38px;
+    text-align: center;
+    border-radius: 20px;
+    color: #fff;
+    background-image: var(--theme-linear-gradient);
   }
 }
 </style>

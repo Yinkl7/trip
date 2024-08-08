@@ -12,3 +12,12 @@ export function getHomeCategories() {
     url: '/home/categories'
   })
 }
+
+export function getHomeHouselist(currentPage: number) {
+  return request.get<ResponseType>({
+    url: '/home/houselist',
+    params: {
+      page: currentPage
+    }
+  })
+}

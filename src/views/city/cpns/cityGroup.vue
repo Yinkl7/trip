@@ -17,8 +17,8 @@ const indexList = computed(() => {
   return list
 })
 
-const store = useCityStore()
-const { currentCity } = storeToRefs(store)
+const cityStore = useCityStore()
+const { currentCity } = storeToRefs(cityStore)
 
 const router = useRouter()
 
