@@ -4,7 +4,6 @@ import { storeToRefs } from 'pinia'
 
 const homeStore = useHomeStore()
 const { categories } = storeToRefs(homeStore)
-console.log(categories.value)
 
 homeStore.fetchCategoriesData()
 </script>

@@ -8,18 +8,18 @@ const currentIndex = ref<number>(0)
 
 <template>
   <div class="tab-bar">
-    <van-tabbar v-model="currentIndex" active-color="#ff9854">
+    <van-tabbar v-model="currentIndex" active-color="#ff9854" route>
       <van-tabbar-item
-        icon="home-o"
         v-for="(item, index) in tabbarData"
         :key="index"
         :to="item.path"
+        :icon="item.icon"
       >
         <span>{{ item.text }}</span>
-        <template #icon>
+        <!-- <template #icon>
           <img v-if="currentIndex === index" :src="getAssetURL(item.imageActive)" alt="" />
           <img v-else :src="getAssetURL(item.image)" alt="" />
-        </template>
+        </template> -->
       </van-tabbar-item>
     </van-tabbar>
   </div>
@@ -27,6 +27,7 @@ const currentIndex = ref<number>(0)
 
 <style scoped lang="less">
 .tab-bar {
+  user-select: none;
   img {
     height: 26px;
   }

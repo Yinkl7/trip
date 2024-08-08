@@ -6,15 +6,33 @@ import homeSearchBox from './cpns/homeSearchBox.vue'
 import useHomeStore from '@/stores/modules/home'
 import searchBar from '@/components/searchBar/index.vue'
 import { storeToRefs } from 'pinia'
+import { useScroll, type RefHTMLElementType } from '@/hooks/useScroll'
+import { computed, ref, watch } from 'vue'
 
 const homeStore = useHomeStore()
 const { hotSuggests, categories } = storeToRefs(homeStore)
 homeStore.fetchHotSuggestData()
 homeStore.fetchCategoriesData()
+
+const homeRef = ref<RefHTMLElementType>(null)
+
+const { scrollTop, isReachBottom } = useScroll(homeRef)
+
+const isShowSearchBar = computed(() => {
+  return scrollTop.value >= 360
+})
+
+watch(isReachBottom, (newVal) => {
+  if (newVal) {
+    homeStore.fetchHouselistData().then(() => {
+      isReachBottom.value = false
+    })
+  }
+})
 </script>
 
 <template>
-  <div class="home">
+  <div class="home" ref="homeRef">
     <homeNavBar />
     <div class="banner">
       <img src="@/assets/img/home/banner.webp" alt="" />
@@ -25,7 +43,7 @@ homeStore.fetchCategoriesData()
 
     <homeContent />
 
-    <div class="search-bar">
+    <div class="search-bar" v-show="isShowSearchBar">
       <searchBar />
     </div>
   </div>
